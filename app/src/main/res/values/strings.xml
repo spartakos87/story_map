@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">story_map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_add_your_story">AddYourStory</string>
+</resources>
