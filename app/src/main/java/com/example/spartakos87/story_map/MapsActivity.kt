@@ -1,5 +1,6 @@
 package com.example.spartakos87.story_map
 
+import android.Manifest
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -27,9 +28,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.CAMERA,android.Manifest.permission.INTERNET,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA, Manifest.permission.INTERNET,
+                Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE)
         ActivityCompat.requestPermissions(this, permissions,0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -80,6 +81,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             {
                 // show dialog box to user to enable location
                 tracker.askToOnLocation()
+                val latitude = tracker.getLatitude()
+                val longitude = tracker.getLongitude()
+                ZoomInMap(latitude,longitude)
             }
 //        add marker after long pressure
         mMap.setOnMapLongClickListener {

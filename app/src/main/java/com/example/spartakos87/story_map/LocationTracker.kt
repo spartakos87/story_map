@@ -86,7 +86,7 @@ class LocationTracker(//declaring Context variable
         }
     }
 
-    // call this to getLatitude
+        // call this to getLatitude
     fun getLatitude(): Double {
         if (location != null) {
             latitude = location!!.latitude
