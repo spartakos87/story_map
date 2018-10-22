@@ -30,7 +30,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onCreate(savedInstanceState: Bundle?) {
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA, Manifest.permission.INTERNET,
-                Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
         ActivityCompat.requestPermissions(this, permissions,0)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
