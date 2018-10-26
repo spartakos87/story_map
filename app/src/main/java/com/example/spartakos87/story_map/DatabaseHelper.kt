@@ -16,8 +16,9 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
         val TableName = "Person"
         val PersonId = "_id"
         val PersonName = "name"
-        val PersonSurname = "surname"
-        val Personage = "age"
+//        val PersonName = "name"
+//        val PersonSurname = "surname"
+//        val Personage = "age"
 
         @Synchronized
         fun getInstance(ctx: Context): MySqlHelper {
@@ -53,20 +54,23 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
     val Context.database: MySqlHelper get() = MySqlHelper.getInstance(applicationContext)
 
     @Throws(SQLiteConstraintException::class)
-    fun insert(person: Person)
+//    fun insert(person: Person)
+    fun insert(person: PhotoUrl)
     {
         val db = this.writableDatabase
         val values = ContentValues()
         values.put("_id", person.id)
         values.put("name", person.name)
-        values.put("surname", person.surname)
-        values.put("age", person.age)
+//        values.put("surname", person.surname)
+//        values.put("age", person.age)
         db?.insert("Person", null, values)
         db.close()
     }
 
-    fun readAllPerson(): ArrayList<Person> {
-        val person = ArrayList<Person>()
+//    fun readAllPerson(): ArrayList<Person> {
+    fun readAllPerson(): ArrayList<PhotoUrl> {
+//        val person = ArrayList<Person>()
+        val person = ArrayList<PhotoUrl>()
         val db = this.writableDatabase
         var cursor: Cursor? = null
         try {
@@ -86,9 +90,11 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
             while (cursor.isAfterLast == false) {
                 personId = cursor.getInt(cursor.getColumnIndex("_id"))
                 name = cursor.getString(cursor.getColumnIndex("name"))
-                surname = cursor.getString(cursor.getColumnIndex("surname"))
-                age = cursor.getInt(cursor.getColumnIndex("age"))
-                person.add(Person(personId, name, surname, age))
+//                surname = cursor.getString(cursor.getColumnIndex("surname"))
+//                age = cursor.getInt(cursor.getColumnIndex("age"))
+//                person.add(Person(personId, name, surname, age))
+//                person.add(Person(personId, name))
+                person.add(PhotoUrl(personId, name))
                 cursor.moveToNext()
             }
         }
@@ -97,8 +103,10 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
 
 
     @Throws(SQLiteConstraintException::class)
-    fun readPerson(personId: String):ArrayList<Person>{
-        val person=ArrayList<Person>()
+//    fun readPerson(personId: String):ArrayList<Person>{
+    fun readPerson(personId: String):ArrayList<PhotoUrl>{
+//        val person=ArrayList<Person>()
+        val person=ArrayList<PhotoUrl>()
         val db=writableDatabase
         var cursor: Cursor? = null
         try {
@@ -116,10 +124,12 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
             while (cursor.isAfterLast==false){
                 id=cursor.getInt(cursor.getColumnIndex(PersonId))
                 name=cursor.getString(cursor.getColumnIndex(PersonName))
-                surname=cursor.getString(cursor.getColumnIndex(PersonSurname))
-                age=cursor.getInt(cursor.getColumnIndex(Personage))
+//                surname=cursor.getString(cursor.getColumnIndex(PersonSurname))
+//                age=cursor.getInt(cursor.getColumnIndex(Personage))
 
-                person.add(Person(id,name,surname,age))
+//                person.add(Person(id,name,surname,age))
+//                person.add(Person(id,name))
+                person.add(PhotoUrl(id,name))
                 cursor.moveToNext()
             }
         }

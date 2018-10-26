@@ -34,7 +34,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
@@ -47,12 +46,11 @@
         <activity
             android:name=".AddYourStory"
             android:label="@string/title_activity_add_your_story"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".InfoWindow"
+            android:label="@string/title_activity_info_window"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
-
-
-
-
     </application>
 
 </manifest>

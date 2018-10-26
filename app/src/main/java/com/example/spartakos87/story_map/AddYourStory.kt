@@ -48,7 +48,7 @@ val    storage = FirebaseStorage.getInstance()
 
 
         val intent = intent
-        val lat = intent.getStringExtra("lng")
+        val lat = intent.getStringExtra("lat")
         val lng = intent.getStringExtra("lng")
         db = FirebaseFirestore.getInstance()
         val builder = StrictMode.VmPolicy.Builder()
@@ -75,17 +75,16 @@ val    storage = FirebaseStorage.getInstance()
         val btn = findViewById<Button>(R.id.button)
         btn.setOnClickListener{
 
-            println("????????????????????????>>>>"+photoUrl)
+
             var Mydb:MySqlHelper = MySqlHelper(this)
-            println("A=======================>"+Mydb.readAllPerson().toString())
             val photo_url  = Mydb.readPerson(1.toString())
             var url =""
             if (!photo_url.isEmpty()){
                 url =  photo_url.get(0).name.toString()
                 Mydb.deletePerson(1.toString())
-                println("~~~~~~~~~~~~~~~~~~~~~~~~~~>"+url)
+
             }
-//            println("B=======================>"+photo_url)
+
 
 
             val MyStory: HashMap<String, String> = HashMap<String,String>()
@@ -120,10 +119,10 @@ val    storage = FirebaseStorage.getInstance()
 
                val  uploadTask = picRef.putStream(stream)
                 uploadTask.addOnFailureListener { exception ->
-
+//                    Toast.makeText(this,"Photo is failed to upload",Toast.LENGTH_LONG).show()
                     println("Failed")
                 }.addOnSuccessListener { taskSnapshot ->
-
+//Toast.makeText(this,"Photo is uploaded",Toast.LENGTH_LONG).show()
                     println("OK")
                     picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
 
@@ -134,7 +133,7 @@ val    storage = FirebaseStorage.getInstance()
 
                         var db:MySqlHelper = MySqlHelper(this)
 
-                        val person = Person(1, photoUrl.toString(), "F", 38)
+                        val person = PhotoUrl(1, photoUrl.toString())
                         db.insert(person)
 
                         println ("url =" + photoUrl.toString ())
