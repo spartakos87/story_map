@@ -1,5 +1,6 @@
 package com.example.spartakos87.story_map
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
@@ -37,14 +38,18 @@ class InfoWindow : AppCompatActivity() {
                          val ViewPhoto = findViewById<Button>(R.id.button8)
                          ViewPhoto.setOnClickListener {
 //                             Here we parse the firebase url of photo to next activity and we view the image
+                             val imageViewActiviyIntent = Intent(this, ImageView::class.java)
+                             imageViewActiviyIntent.putExtra("photourl",info_photo_url)
+                             startActivity(imageViewActiviyIntent)
+
 
                          }
-
-                         val DeleteDocument = findViewById<Button>(R.id.button9)
-                         ViewPhoto.setOnClickListener {}
-
-                         val EditDocument = findViewById<Button>(R.id.button10)
-                         ViewPhoto.setOnClickListener {}
+//
+//                         val DeleteDocument = findViewById<Button>(R.id.button9)
+//                         ViewPhoto.setOnClickListener {}
+//
+//                         val EditDocument = findViewById<Button>(R.id.button10)
+//                         ViewPhoto.setOnClickListener {}
 
                      }
          }

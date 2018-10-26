@@ -117,8 +117,8 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
         }
         var id:Int
         var name:String
-        var surname:String
-        var age:Int
+//        var surname:String
+//        var age:Int
 
         if (cursor!!.moveToFirst()){
             while (cursor.isAfterLast==false){

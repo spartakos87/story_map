@@ -50,7 +50,11 @@
         <activity
             android:name=".InfoWindow"
             android:label="@string/title_activity_info_window"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ImageView"
+            android:label="@string/title_activity_image_view"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
