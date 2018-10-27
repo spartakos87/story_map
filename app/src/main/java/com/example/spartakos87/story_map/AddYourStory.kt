@@ -26,6 +26,8 @@ import java.util.*
 
 
 
+
+
 //@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class AddYourStory : AppCompatActivity() {
 val    storage = FirebaseStorage.getInstance()
@@ -36,12 +38,15 @@ val    storage = FirebaseStorage.getInstance()
     var imagePath: String? = null
     var photoUrl : String? = null
 
+    val photoName = dateToString(Date(), "yyyy-MM-dd-hh-mm-ss")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_your_story)
         setSupportActionBar(toolbar)
+
+
 
 
         val db: FirebaseFirestore
@@ -81,6 +86,8 @@ val    storage = FirebaseStorage.getInstance()
             var url =""
             if (!photo_url.isEmpty()){
                 url =  photo_url.get(0).name.toString()
+
+                println("~~~~~~~~~~~~~~~~~~~~>URL"+url)
                 Mydb.deletePerson(1.toString())
 
             }
@@ -92,7 +99,7 @@ val    storage = FirebaseStorage.getInstance()
             MyStory.put("story",txtStory.text.toString())
             MyStory.put("lat",lat)
             MyStory.put("lng",lng)
-            MyStory.put("url",url)
+            MyStory.put("url",photoName)
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
             val confirm = Intent(this, MapsActivity::class.java)
             startActivity(confirm)
@@ -107,6 +114,7 @@ val    storage = FirebaseStorage.getInstance()
 
 
     override  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>NAME "+photoName)
         if (requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK) {
             try {
                 val `in` = FileInputStream(destination)
@@ -115,15 +123,16 @@ val    storage = FirebaseStorage.getInstance()
                 imagePath = destination!!.getAbsolutePath()
                 val storageRef = storage.reference
                 val stream = FileInputStream(File(imagePath))
-                val picRef = storageRef.child(dateToString(Date(), "yyyy-MM-dd-hh-mm-ss"))
+//                val picRef = storageRef.child(dateToString(Date(), "yyyy-MM-dd-hh-mm-ss"))
+                val picRef = storageRef.child(photoName)
 
                val  uploadTask = picRef.putStream(stream)
                 uploadTask.addOnFailureListener { exception ->
-//                    Toast.makeText(this,"Photo is failed to upload",Toast.LENGTH_LONG).show()
-                    println("Failed")
+
+
                 }.addOnSuccessListener { taskSnapshot ->
-//Toast.makeText(this,"Photo is uploaded",Toast.LENGTH_LONG).show()
-                    println("OK")
+
+
                     picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
 
 
@@ -132,11 +141,14 @@ val    storage = FirebaseStorage.getInstance()
 
 
                         var db:MySqlHelper = MySqlHelper(this)
+                        db.deletePerson(1.toString())
+                        val photo_url = PhotoUrl(1, photoUrl.toString())
 
-                        val person = PhotoUrl(1, photoUrl.toString())
-                        db.insert(person)
+                        println("~~~~~~~~~~~~~~~~~~~~~~!!!@@@>>>>"+photo_url.name)
+                        db.insert(photo_url)
 
-                        println ("url =" + photoUrl.toString ())
+
+
 
                     }
                 }
