@@ -72,9 +72,11 @@ class InfoWindow : AppCompatActivity() {
                            }
                          }
 
-//
-//                         val EditDocument = findViewById<Button>(R.id.button9)
-//                         ViewPhoto.setOnClickListener {}
+
+                         val EditDocument = findViewById<Button>(R.id.button9)
+                         EditDocument.setOnClickListener {
+//                             TODO all the functionality of edit we will be placed here
+                         }
 
                      }
          }

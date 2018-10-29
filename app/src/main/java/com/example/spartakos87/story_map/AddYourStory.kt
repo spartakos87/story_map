@@ -102,7 +102,7 @@ val    storage = FirebaseStorage.getInstance()
             MyStory.put("lng",lng)
             MyStory.put("url",photoName)
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
-//            Retunr to main activity to map
+//            Return to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
             startActivity(confirm)
 
