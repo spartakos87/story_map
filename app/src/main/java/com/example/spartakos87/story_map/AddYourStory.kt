@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -22,12 +23,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
-
-
-
-
-
-
 
 
 class AddYourStory : AppCompatActivity() {
@@ -118,10 +113,12 @@ val    storage = FirebaseStorage.getInstance()
     override  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK) {
             try {
+
                 val `in` = FileInputStream(destination)
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 10
-                val bmp = BitmapFactory.decodeStream(`in`, null, options)
+//                Rotate the image 
+                val bmp =rotateImage(-90, BitmapFactory.decodeStream(`in`, null, options))
                 val baos = ByteArrayOutputStream()
                 bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos)
                 val data = baos.toByteArray()
@@ -169,7 +166,12 @@ val    storage = FirebaseStorage.getInstance()
     }
 
 
-
+    fun rotateImage(angle: Int, bitmapSrc: Bitmap): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(angle.toFloat())
+        return Bitmap.createBitmap(bitmapSrc, 0, 0,
+                bitmapSrc.width, bitmapSrc.height, matrix, true)
+    }
 
     }
 
