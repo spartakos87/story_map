@@ -2,6 +2,7 @@ package com.example.spartakos87.story_map
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.widget.EditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_add_your_story.*
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -28,7 +30,6 @@ import java.util.*
 
 
 
-//@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class AddYourStory : AppCompatActivity() {
 val    storage = FirebaseStorage.getInstance()
 
@@ -81,17 +82,17 @@ val    storage = FirebaseStorage.getInstance()
         btn.setOnClickListener{
 
 
-            var Mydb:MySqlHelper = MySqlHelper(this)
-            val photo_url  = Mydb.readPerson(1.toString())
-            var url =""
-            if (!photo_url.isEmpty()){
-                url =  photo_url.get(0).name.toString()
-
-                println("~~~~~~~~~~~~~~~~~~~~>URL"+url)
-                Mydb.deletePerson(1.toString())
-
-            }
-
+//            var Mydb:MySqlHelper = MySqlHelper(this)
+//            val photo_url  = Mydb.readPerson(1.toString())
+//            var url =""
+//            if (!photo_url.isEmpty()){
+//                url =  photo_url.get(0).name.toString()
+//
+//                println("~~~~~~~~~~~~~~~~~~~~>URL"+url)
+//                Mydb.deletePerson(1.toString())
+//
+//            }
+//
 
 
             val MyStory: HashMap<String, String> = HashMap<String,String>()
@@ -101,6 +102,7 @@ val    storage = FirebaseStorage.getInstance()
             MyStory.put("lng",lng)
             MyStory.put("url",photoName)
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
+//            Retunr to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
             startActivity(confirm)
 
@@ -114,54 +116,48 @@ val    storage = FirebaseStorage.getInstance()
 
 
     override  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>NAME "+photoName)
         if (requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK) {
             try {
                 val `in` = FileInputStream(destination)
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 10
+                val bmp = BitmapFactory.decodeStream(`in`, null, options)
+                val baos = ByteArrayOutputStream()
+                bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                val data = baos.toByteArray()
                 imagePath = destination!!.getAbsolutePath()
                 val storageRef = storage.reference
                 val stream = FileInputStream(File(imagePath))
 //                val picRef = storageRef.child(dateToString(Date(), "yyyy-MM-dd-hh-mm-ss"))
                 val picRef = storageRef.child(photoName)
 
-               val  uploadTask = picRef.putStream(stream)
+//               val  uploadTask = picRef.putStream(stream)
+               val  uploadTask = picRef.putBytes(data)
                 uploadTask.addOnFailureListener { exception ->
 
 
                 }.addOnSuccessListener { taskSnapshot ->
 
-
-                    picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
-
-
-
-                        photoUrl = taskSnapshot.result.toString()
-
-
-                        var db:MySqlHelper = MySqlHelper(this)
-                        db.deletePerson(1.toString())
-                        val photo_url = PhotoUrl(1, photoUrl.toString())
-
-                        println("~~~~~~~~~~~~~~~~~~~~~~!!!@@@>>>>"+photo_url.name)
-                        db.insert(photo_url)
-
-
-
-
-                    }
+//                    TODO Toast which will info user that picture has be uploaded
+//                    picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
+//
+//
+//
+//
+//
+//
+//                    }
                 }
 
 
-                val bmp = BitmapFactory.decodeStream(`in`, null, options)
+
 
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             }
 
         } else {
-println("Cancel")
+                   println("Cancel")
         }
     }
 
