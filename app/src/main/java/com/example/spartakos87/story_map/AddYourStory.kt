@@ -1,17 +1,29 @@
 package com.example.spartakos87.story_map
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
+import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
+import android.widget.EditText
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_add_your_story.*
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.text.SimpleDateFormat
+import java.util.*
+
+
 
 
 
@@ -19,6 +31,15 @@ import java.io.File
 
 
 class AddYourStory : AppCompatActivity() {
+val    storage = FirebaseStorage.getInstance()
+
+    private val REQUEST_IMAGE = 100
+    private val TAG = "MainActivity"
+    var destination: File? = null
+    var imagePath: String? = null
+    var photoUrl : String? = null
+
+    val photoName = dateToString(Date(), "yyyy-MM-dd-hh-mm-ss")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,163 +47,133 @@ class AddYourStory : AppCompatActivity() {
         setContentView(R.layout.activity_add_your_story)
         setSupportActionBar(toolbar)
 
-        val db: FirebaseFirestore
 
-var takeUri:Uri
+
+
+        val db: FirebaseFirestore
 
 
         val intent = intent
-        var path = ""
-        val lat = intent.getStringExtra("lng")
+        val lat = intent.getStringExtra("lat")
         val lng = intent.getStringExtra("lng")
-//        val txt = findViewById<TextInputEditText>(R.id.textInputEditText2)
-//        txt.setText("lat===>"+lat)
         db = FirebaseFirestore.getInstance()
+        val builder = StrictMode.VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build());
 
-//edo pairnei ola ta documents toy collection
-//        db.collection("Book")
-//                .get()
-//                .addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        for (document in task.result) {
-//                            Log.d("INFO",document.id + " => " + document.data)
-//                            println("FILIPPAS")
-//                        }
-//                    } else {
-//                        Log.d("INFO", "Error getting documents: ", task.exception)
-//                        print("SEREPAS")
-//                    }
-//                }
-
-
-
-        val REQUEST_IMAGE_CAPTURE = 1
-
-
-         fun dispatchTakePictureIntent() {
-
-             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-
-                takePictureIntent.resolveActivity(packageManager)?.also {
-
-
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                }
-            }
-
-
-
-
-         }
-
-
-
-        fun launchCamera() {
-            val values = ContentValues(1)
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
-            val fileUri = contentResolver
-                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            values)
-             path = fileUri.toString()
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if(intent.resolveActivity(packageManager) != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
-
-
-            }
-        }
-
-
-
-@Override
-fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-
-    if (resultCode == Activity.RESULT_OK
-            && requestCode == REQUEST_IMAGE_CAPTURE) {
-
-        val extras = data.extras
-        val imageBitmap = extras.get("data") as Bitmap
-
-
-    } else {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
-}
-
-
-
-
-
-
+        val name = dateToString(Date(), "yyyy-MM-dd-hh-mm-ss")
+        destination = File(Environment.getExternalStorageDirectory(), "$name.jpg")
 
         val takephoto = findViewById<Button>(R.id.button2)
         takephoto.setOnClickListener {
-//        dispatchTakePictureIntent()
-launchCamera()
-//            val myFile = File(path.toString())
-
-//            myFile.getAbsolutePath()
-
-println("=====================================>"+path)
-            val myFile = File(path)
-println("=====================================>"+myFile.exists())
-            println("AUTO==============>"+myFile.absolutePath)
 
 
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(destination));
+           startActivityForResult(intent, REQUEST_IMAGE)
 
 
-//
-//            val storage = FirebaseStorage.getInstance()
-//            val storageRef = storage.reference
-//
-//            var file = Uri.fromFile(File(path))
-//            val riversRef = storageRef.child("images/${file.lastPathSegment}")
-//            riversRef.putFile(file)
 
         }
 
-
+        val txtTitle = findViewById<TextInputEditText>(R.id.textInputEditText2)
+        val txtStory = findViewById<EditText>(R.id.editText)
 
         val btn = findViewById<Button>(R.id.button)
         btn.setOnClickListener{
-            val book: HashMap<String, String> = HashMap<String,String>()
-            book.put("lat",lat)
-            book.put("lng",lng)
-
-//            book.put("Img", thePhoto.toString())
-//            book.put("Year","1d987")
-            db.collection("Book").document().set(book as Map<String, Any>)
 
 
-
-
-            // Write a message to the database
-//            val database = FirebaseDatabase.getInstance()
-
-//            val myRef = database.getReference("message")
-
-
-//            // Write a message to the database
-
-//            val myRef = database.getReference("message")
+//            var Mydb:MySqlHelper = MySqlHelper(this)
+//            val photo_url  = Mydb.readPerson(1.toString())
+//            var url =""
+//            if (!photo_url.isEmpty()){
+//                url =  photo_url.get(0).name.toString()
 //
-//            myRef.setValue("Hello, World!")
+//                println("~~~~~~~~~~~~~~~~~~~~>URL"+url)
+//                Mydb.deletePerson(1.toString())
+//
+//            }
+//
+
+
+            val MyStory: HashMap<String, String> = HashMap<String,String>()
+            MyStory.put("title",txtTitle.text.toString())
+            MyStory.put("story",txtStory.text.toString())
+            MyStory.put("lat",lat)
+            MyStory.put("lng",lng)
+            MyStory.put("url",photoName)
+            db.collection("Stories").document().set(MyStory as Map<String, Any>)
+//            Retunr to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
             startActivity(confirm)
 
-
         }
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
+
+
+
+
+
+    }
+
+
+    override  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE && resultCode == Activity.RESULT_OK) {
+            try {
+                val `in` = FileInputStream(destination)
+                val options = BitmapFactory.Options()
+                options.inSampleSize = 10
+                val bmp = BitmapFactory.decodeStream(`in`, null, options)
+                val baos = ByteArrayOutputStream()
+                bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                val data = baos.toByteArray()
+                imagePath = destination!!.getAbsolutePath()
+                val storageRef = storage.reference
+                val stream = FileInputStream(File(imagePath))
+//                val picRef = storageRef.child(dateToString(Date(), "yyyy-MM-dd-hh-mm-ss"))
+                val picRef = storageRef.child(photoName)
+
+//               val  uploadTask = picRef.putStream(stream)
+               val  uploadTask = picRef.putBytes(data)
+                uploadTask.addOnFailureListener { exception ->
+
+
+                }.addOnSuccessListener { taskSnapshot ->
+
+//                    TODO Toast which will info user that picture has be uploaded
+//                    picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
+//
+//
+//
+//
+//
+//
+//                    }
+                }
+
+
+
+
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+
+        } else {
+                   println("Cancel")
+        }
+    }
+
+
+
+    fun dateToString(date: Date, format: String): String {
+        val df = SimpleDateFormat(format)
+        return df.format(date)
     }
 
 
 
 
-}
+    }
+
+
+
+
+

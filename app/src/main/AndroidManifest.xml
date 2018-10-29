@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +34,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
@@ -46,12 +46,15 @@
         <activity
             android:name=".AddYourStory"
             android:label="@string/title_activity_add_your_story"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-
-
-
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".InfoWindow"
+            android:label="@string/title_activity_info_window"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ImageView"
+            android:label="@string/title_activity_image_view"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
