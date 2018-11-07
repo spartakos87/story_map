@@ -76,19 +76,7 @@ val    storage = FirebaseStorage.getInstance()
         val btn = findViewById<Button>(R.id.button)
         btn.setOnClickListener{
 
-
-//            var Mydb:MySqlHelper = MySqlHelper(this)
-//            val photo_url  = Mydb.readPerson(1.toString())
-//            var url =""
-//            if (!photo_url.isEmpty()){
-//                url =  photo_url.get(0).name.toString()
-//
-//                println("~~~~~~~~~~~~~~~~~~~~>URL"+url)
-//                Mydb.deletePerson(1.toString())
-//
-//            }
-//
-
+//            Save the data in hashmap Mystory and upload it to firebase database
 
             val MyStory: HashMap<String, String> = HashMap<String,String>()
             MyStory.put("title",txtTitle.text.toString())
@@ -117,18 +105,18 @@ val    storage = FirebaseStorage.getInstance()
                 val `in` = FileInputStream(destination)
                 val options = BitmapFactory.Options()
                 options.inSampleSize = 10
-//                Rotate the image 
-                val bmp =rotateImage(-90, BitmapFactory.decodeStream(`in`, null, options))
+//                Rotate the image, when we get photo from front camera the image is rotated to firebase
+//                So I rotate it before upload it
+//                TODO check from which camera take photo, if from front camera rotate the image
+//                Here I reduce the quality of image for faster upload and download
+                val bmp =rotateImage(90, BitmapFactory.decodeStream(`in`, null, options))
                 val baos = ByteArrayOutputStream()
                 bmp.compress(Bitmap.CompressFormat.JPEG, 50, baos)
                 val data = baos.toByteArray()
                 imagePath = destination!!.getAbsolutePath()
                 val storageRef = storage.reference
                 val stream = FileInputStream(File(imagePath))
-//                val picRef = storageRef.child(dateToString(Date(), "yyyy-MM-dd-hh-mm-ss"))
                 val picRef = storageRef.child(photoName)
-
-//               val  uploadTask = picRef.putStream(stream)
                val  uploadTask = picRef.putBytes(data)
                 uploadTask.addOnFailureListener { exception ->
 
@@ -136,14 +124,7 @@ val    storage = FirebaseStorage.getInstance()
                 }.addOnSuccessListener { taskSnapshot ->
 
 //                    TODO Toast which will info user that picture has be uploaded
-//                    picRef.downloadUrl.addOnCompleteListener () {taskSnapshot ->
-//
-//
-//
-//
-//
-//
-//                    }
+//                    TODO take download url of image
                 }
 
 
@@ -161,6 +142,8 @@ val    storage = FirebaseStorage.getInstance()
 
 
     fun dateToString(date: Date, format: String): String {
+//        Create name of photo base to date
+//        TODO find really way for unique name
         val df = SimpleDateFormat(format)
         return df.format(date)
     }

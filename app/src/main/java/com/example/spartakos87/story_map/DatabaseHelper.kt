@@ -1,4 +1,4 @@
-package com.example.spartakos87.story_map
+    package com.example.spartakos87.story_map
 
 import android.content.ContentValues
 import android.content.Context
@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteException
 import org.jetbrains.anko.db.*
 
 class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
+    //TODO this db is for future use. We save the docIds for specific use for faster retrieve of data
+//    In future user can view only his/her stories in map or stories of his/her friends
+//    For now is not used
 
     companion object {
         private var instance: MySqlHelper? = null
@@ -16,9 +19,6 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
         val TableName = "Person"
         val PersonId = "_id"
         val PersonName = "name"
-//        val PersonName = "name"
-//        val PersonSurname = "surname"
-//        val Personage = "age"
 
         @Synchronized
         fun getInstance(ctx: Context): MySqlHelper {
@@ -34,9 +34,7 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
         db?.createTable("Person", true,
 //                "_id" to INTEGER + PRIMARY_KEY + UNIQUE,
                 "_id" to SqlType.create("INTEGER  PRIMARY_KEY  UNIQUE"),
-                "name" to TEXT,
-                "surname" to TEXT,
-                "age" to INTEGER)
+                "name" to TEXT)
 
 
 
@@ -54,22 +52,18 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
     val Context.database: MySqlHelper get() = MySqlHelper.getInstance(applicationContext)
 
     @Throws(SQLiteConstraintException::class)
-//    fun insert(person: Person)
     fun insert(person: PhotoUrl)
     {
         val db = this.writableDatabase
         val values = ContentValues()
         values.put("_id", person.id)
         values.put("name", person.name)
-//        values.put("surname", person.surname)
-//        values.put("age", person.age)
         db?.insert("Person", null, values)
         db.close()
     }
 
-//    fun readAllPerson(): ArrayList<Person> {
+
     fun readAllPerson(): ArrayList<PhotoUrl> {
-//        val person = ArrayList<Person>()
         val person = ArrayList<PhotoUrl>()
         val db = this.writableDatabase
         var cursor: Cursor? = null
@@ -83,17 +77,11 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
 
         var personId: Int
         var name: String
-        var surname: String
-        var age: Int
 
         if (cursor!!.moveToFirst()) {
             while (cursor.isAfterLast == false) {
                 personId = cursor.getInt(cursor.getColumnIndex("_id"))
                 name = cursor.getString(cursor.getColumnIndex("name"))
-//                surname = cursor.getString(cursor.getColumnIndex("surname"))
-//                age = cursor.getInt(cursor.getColumnIndex("age"))
-//                person.add(Person(personId, name, surname, age))
-//                person.add(Person(personId, name))
                 person.add(PhotoUrl(personId, name))
                 cursor.moveToNext()
             }
@@ -103,9 +91,8 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
 
 
     @Throws(SQLiteConstraintException::class)
-//    fun readPerson(personId: String):ArrayList<Person>{
     fun readPerson(personId: String):ArrayList<PhotoUrl>{
-//        val person=ArrayList<Person>()
+
         val person=ArrayList<PhotoUrl>()
         val db=writableDatabase
         var cursor: Cursor? = null
@@ -117,18 +104,11 @@ class MySqlHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "mydb") {
         }
         var id:Int
         var name:String
-//        var surname:String
-//        var age:Int
 
         if (cursor!!.moveToFirst()){
             while (cursor.isAfterLast==false){
                 id=cursor.getInt(cursor.getColumnIndex(PersonId))
                 name=cursor.getString(cursor.getColumnIndex(PersonName))
-//                surname=cursor.getString(cursor.getColumnIndex(PersonSurname))
-//                age=cursor.getInt(cursor.getColumnIndex(Personage))
-
-//                person.add(Person(id,name,surname,age))
-//                person.add(Person(id,name))
                 person.add(PhotoUrl(id,name))
                 cursor.moveToNext()
             }
