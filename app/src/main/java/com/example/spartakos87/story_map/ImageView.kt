@@ -23,6 +23,8 @@ class ImageView : AppCompatActivity() {
                     .load(url)
                     .into(findViewById(R.id.imageView))
 
+
+
         }.addOnFailureListener {
             // Handle any errors
         }

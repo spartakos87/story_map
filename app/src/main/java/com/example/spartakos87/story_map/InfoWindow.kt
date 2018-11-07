@@ -52,7 +52,7 @@ class InfoWindow : AppCompatActivity() {
 
                            db.collection("Stories").document(DocId).delete().addOnSuccessListener {
                                //If the delete action was success return to main activity, to map
-//                             Here we attempt to delete the image which is conncted with the document
+//                             Here we attempt to delete the image which is connected with the document
                                val storage = FirebaseStorage.getInstance()
 
                                val storageRef = storage.reference
@@ -72,9 +72,11 @@ class InfoWindow : AppCompatActivity() {
                            }
                          }
 
-//
-//                         val EditDocument = findViewById<Button>(R.id.button9)
-//                         ViewPhoto.setOnClickListener {}
+
+                         val EditDocument = findViewById<Button>(R.id.button9)
+                         EditDocument.setOnClickListener {
+//                             TODO all the functionality of edit we will be placed here
+                         }
 
                      }
          }
