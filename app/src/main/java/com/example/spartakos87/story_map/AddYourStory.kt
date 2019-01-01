@@ -12,11 +12,16 @@ import android.os.StrictMode
 import android.provider.MediaStore
 import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import com.example.spartakos87.story_map.R.id.spinner
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_add_your_story.*
+import kotlinx.android.synthetic.main.content_add_your_story.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -33,9 +38,9 @@ val    storage = FirebaseStorage.getInstance()
     var destination: File? = null
     var imagePath: String? = null
     var photoUrl : String? = null
-
+var TypePosition: Int = 0
     val photoName = dateToString(Date(), "yyyy-MM-dd-hh-mm-ss")
-
+val list_of_choices = arrayOf("Φωτισμός","Απορρήματα","Αλλο")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,10 +77,27 @@ val    storage = FirebaseStorage.getInstance()
 
         val txtTitle = findViewById<TextInputEditText>(R.id.textInputEditText2)
         val txtStory = findViewById<EditText>(R.id.editText)
+//        spinner2!!.setOnItemSelectedListener(this)
 
+        val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, list_of_choices)
+        // Set layout to use when the list of choices appear
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Set Adapter to Spinner
+        spinner!!.setAdapter(aa)
+spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+        TypePosition = list_of_choices.size-1
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                   TypePosition = position
+    }
+
+}
         val btn = findViewById<Button>(R.id.button)
         btn.setOnClickListener{
-
+             val TypeOfReport : String = list_of_choices.get(TypePosition)
 //            Save the data in hashmap Mystory and upload it to firebase database
 
             val MyStory: HashMap<String, String> = HashMap<String,String>()
@@ -84,6 +106,7 @@ val    storage = FirebaseStorage.getInstance()
             MyStory.put("lat",lat)
             MyStory.put("lng",lng)
             MyStory.put("url",photoName)
+            MyStory.put("type",TypeOfReport)
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
 //            Return to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
@@ -96,6 +119,7 @@ val    storage = FirebaseStorage.getInstance()
 
 
     }
+
 
 
     override  fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -155,6 +179,9 @@ val    storage = FirebaseStorage.getInstance()
         return Bitmap.createBitmap(bitmapSrc, 0, 0,
                 bitmapSrc.width, bitmapSrc.height, matrix, true)
     }
+
+
+
 
     }
 

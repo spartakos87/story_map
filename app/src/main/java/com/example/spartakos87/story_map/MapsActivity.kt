@@ -11,6 +11,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -65,12 +66,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+// https://stackoverflow.com/questions/19076124/android-map-marker-color
 
         //edo pairnei ola ta documents toy collection
         var coordinates:LatLng
         var temp_lat:Double
         var temp_lng:Double
+        var color : Float
         val db: FirebaseFirestore
         db = FirebaseFirestore.getInstance()
         db.collection("Stories")
@@ -83,17 +85,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                                 println("Is nul")
                             }else
                            {
+//                               Check if there is type and if select color
+                               if (document.get("type") == null){
+//                                   if there isnt such a field is red
+                                    color = BitmapDescriptorFactory.HUE_RED
+                               } else {
+                                   when(document.get("type")){
+                                       "Φωτισμός" -> color = BitmapDescriptorFactory.HUE_YELLOW
+                                       "Απορρήματα" -> color = BitmapDescriptorFactory.HUE_BLUE
+                                       "Αλλο" -> color = BitmapDescriptorFactory.HUE_ORANGE
+                                       else -> color=BitmapDescriptorFactory.HUE_RED
+
+                                   }
+                               }
                                coordinates = LatLng(document.getString("lat").toDouble(), document.getString("lng").toDouble())
-                               mMap.addMarker(MarkerOptions().position(coordinates).title(document.getString("title"))).setTag(document.id)
+                               mMap.addMarker(MarkerOptions().position(coordinates)
+                                       .icon(BitmapDescriptorFactory
+                                               .defaultMarker(color))
+                                       .title(document.getString("title")))
+                                       .setTag(document.id)
 
 
-//            )
+
                            }
-//                            Log.d("INFO",document.id + " => " + document.data)
+
                         }
                     } else {
                         Log.d("INFO", "Error getting documents: ", task.exception)
-                        print("SEREPAS")
                     }
                 }
 
