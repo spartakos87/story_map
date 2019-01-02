@@ -1,5 +1,6 @@
 package com.example.spartakos87.story_map
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -34,7 +35,10 @@ class Register : AppCompatActivity() {
                         val toast = Toast.makeText(applicationContext, text, duration)
                         toast.show()
 
-                        
+// if the created of new account is success go to map activity with the mail of user
+                        val intent = Intent(this, MapsActivity::class.java)
+                        intent.putExtra("username", email)
+                        startActivity(intent)
 
                     } else {
                         //Registration error

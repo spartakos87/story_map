@@ -23,9 +23,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mMap: GoogleMap
     private lateinit var lastLocation: Location
-
-
-
+    var username: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +41,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
+        val intent = intent
+        username = intent.getStringExtra("username")
 
 
 
@@ -136,6 +135,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val intent = Intent(this, AddYourStory::class.java)
             intent.putExtra("lat", latLng.latitude.toString())
             intent.putExtra("lng", latLng.longitude.toString())
+            intent.putExtra("username", username)
             startActivity(intent)
 
         }
@@ -145,6 +145,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.setOnMarkerClickListener {marker ->
             val infowindow = Intent(this, InfoWindow::class.java)
             infowindow.putExtra("id",marker.tag.toString())
+//            if the username is the same with the username of the creator of this marker you can delete
+//            otherwise user cannot
+            infowindow.putExtra("username",username)
             startActivity(infowindow)
             false
         }
