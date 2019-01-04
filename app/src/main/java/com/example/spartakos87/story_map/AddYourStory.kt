@@ -56,6 +56,7 @@ val list_of_choices = arrayOf("Φωτισμός","Απορρήματα","Αλλ�
         val intent = intent
         val lat = intent.getStringExtra("lat")
         val lng = intent.getStringExtra("lng")
+        val username = intent.getStringExtra("username")
         db = FirebaseFirestore.getInstance()
         val builder = StrictMode.VmPolicy.Builder()
         StrictMode.setVmPolicy(builder.build());
@@ -107,6 +108,7 @@ spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             MyStory.put("lng",lng)
             MyStory.put("url",photoName)
             MyStory.put("type",TypeOfReport)
+            MyStory.put("username",username)
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
 //            Return to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
