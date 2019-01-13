@@ -6,10 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
 import android.provider.MediaStore
+import android.support.annotation.RequiresApi
 import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -27,6 +29,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -42,6 +46,7 @@ var TypePosition: Int = 0
     val photoName = dateToString(Date(), "yyyy-MM-dd-hh-mm-ss")
 val list_of_choices = arrayOf("Φωτισμός","Απορρήματα","Αλλο")
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_your_story)
@@ -100,7 +105,11 @@ spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
         btn.setOnClickListener{
              val TypeOfReport : String = list_of_choices.get(TypePosition)
 //            Save the data in hashmap Mystory and upload it to firebase database
-
+//            For date formated check this link
+//            https://www.programiz.com/kotlin-programming/examples/current-date-time
+            val current = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatted = current.format(formatter)
             val MyStory: HashMap<String, String> = HashMap<String,String>()
             MyStory.put("title",txtTitle.text.toString())
             MyStory.put("story",txtStory.text.toString())
@@ -109,6 +118,7 @@ spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             MyStory.put("url",photoName)
             MyStory.put("type",TypeOfReport)
             MyStory.put("username",username)
+            MyStory.put("date",current.format(formatter))
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
 //            Return to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)

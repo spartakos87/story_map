@@ -46,7 +46,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         username = intent.getStringExtra("username")
 
 
-
 //        Add listener for float button
         val mFab = findViewById<FloatingActionButton>(R.id.FButton)
         mFab.setOnClickListener {
