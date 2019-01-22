@@ -122,6 +122,7 @@ spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             db.collection("Stories").document().set(MyStory as Map<String, Any>)
 //            Return to main activity to map
             val confirm = Intent(this, MapsActivity::class.java)
+            confirm.putExtra("username", username)
             startActivity(confirm)
 
         }
