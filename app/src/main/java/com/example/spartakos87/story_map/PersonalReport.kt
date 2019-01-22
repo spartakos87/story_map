@@ -13,6 +13,7 @@ import lecho.lib.hellocharts.view.PieChartView
 import lecho.lib.hellocharts.model.SliceValue
 import java.util.ArrayList
 import lecho.lib.hellocharts.model.PieChartData
+import org.jetbrains.anko.toast
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -31,36 +32,6 @@ class PersonalReport : AppCompatActivity() {
         val intent = intent
          username = intent.getStringExtra("username")
          data =  readDB(username)
-        println("SEREPAS"+data)
-//        Check if data contain the key fail, if it is pop up a msg
-        val points = calculaterMonthlyPoints(data,typeReports) // Currnet month points
-//        val totalPoints = calculaterMonthlyPoints(data,totalTypeReports) // Total points
-//        val chartPercentans = calculatePieChartShares(data, typeReports)
-//        val txtUsername = findViewById<TextView>(R.id.textView)
-//        val txtPointsMonth = findViewById<TextView>(R.id.textView2)
-//        val txtPointsSum = findViewById<TextView>(R.id.textView5)
-//        txtUsername.setText("Hello "+username)
-//        txtPointsMonth.setText("Points the current month: "+points)
-//        txtPointsSum.setText("Points summary; "+totalPoints)
-//
-//
-//// Add pie chart , use this tutorial https://www.codingdemos.com/android-pie-chart-tutorial
-//
-//        val pieChartView = findViewById<PieChartView>(R.id.chart)
-//val pieValue = ArrayList<SliceValue>()
-//        pieValue.add(SliceValue(chartPercentans[typeReports[0]]!!.toFloat(), Color.BLUE).setLabel(
-//                typeReports[0]+": "+chartPercentans[typeReports[0]].toString()
-//        ))
-//        pieValue.add(SliceValue(chartPercentans.get(typeReports[1])!!.toFloat(), Color.BLACK).setLabel(
-//                typeReports[1]+": "+chartPercentans[typeReports[1]].toString()
-//        ))
-//        pieValue.add(SliceValue(chartPercentans.get(typeReports[2])!!.toFloat(), Color.RED).setLabel(
-//                typeReports[1]+": "+chartPercentans[typeReports[2]].toString()
-//        ))
-//
-//
-//        val pieChartData = PieChartData(pieValue)
-//        pieChartView.setPieChartData(pieChartData);
 
 
     }
@@ -84,11 +55,10 @@ class PersonalReport : AppCompatActivity() {
 
     fun calculatePieChartShares(hashReports: HashMap<String, Int>,typeReports:Array<String>):HashMap<String, Double>{
         var percentReports:HashMap<String, Double> = HashMap<String, Double>()
-        val total = hashReports.get("total")!!.toDouble()
-//        val typeReports = AddYourStory().list_of_choices
+        val total = hashReports["total"]!!.toDouble()
         for (t in typeReports){
-            if (total != null && !total.equals(0)) {
-                var temp = hashReports.get(t)!!.toInt().div(total)
+            if (total != null && total !=0.0) {
+                var temp = hashReports[t]!!.toInt().div(total)
 
                 percentReports.put(t, temp)
             }else{
@@ -185,11 +155,39 @@ return percentReports
                   topicMapper.put("totalΦωτισμός" ,totalFotismos)
                     topicMapper.put( "totalΑπορρήματα",totalAporrimata)
                     topicMapper.put("totalΑλλο",totalAllo)
-                    topicMapper.put("total",total)
-                    topicMapper.put("tTotal",tTotal)
+                    topicMapper.put("total",fotismos+aporrimata+allo)
+                    topicMapper.put("tTotal",totalFotismos+totalAporrimata+totalAllo)
 
-                        println("SEREPAS HASHMAP===>"+topicMapper)
-                }else{
+                        //        Check if data contain the key fail, if it is pop up a msg
+        val points = calculaterMonthlyPoints(data,typeReports) // Currnet month points
+        val totalPoints = calculaterMonthlyPoints(data,totalTypeReports) // Total points
+        val chartPercentans = calculatePieChartShares(data, typeReports)
+        val txtUsername = findViewById<TextView>(R.id.textView)
+        val txtPointsMonth = findViewById<TextView>(R.id.textView2)
+        val txtPointsSum = findViewById<TextView>(R.id.textView5)
+
+
+
+// Add pie chart , use this tutorial https://www.codingdemos.com/android-pie-chart-tutorial
+
+        val pieChartView = findViewById<PieChartView>(R.id.chart)
+val pieValue = ArrayList<SliceValue>()
+// TODO Fix the labels of pie chart
+        pieValue.add(SliceValue(chartPercentans[typeReports[0]]!!.toFloat(), Color.BLUE).setLabel(
+                typeReports[0]+": "+chartPercentans[typeReports[0]].toString()
+        ))
+        pieValue.add(SliceValue(chartPercentans.get(typeReports[1])!!.toFloat(), Color.BLACK).setLabel(
+                typeReports[1]+": "+chartPercentans[typeReports[1]].toString()
+        ))
+        pieValue.add(SliceValue(chartPercentans.get(typeReports[2])!!.toFloat(), Color.RED).setLabel(
+                typeReports[1]+": "+chartPercentans[typeReports[2]].toString()
+        ))
+
+
+        val pieChartData = PieChartData(pieValue)
+        pieChartView.setPieChartData(pieChartData);
+
+                    }else{
                         println("FAIL")
                     }
                 }.addOnFailureListener {
