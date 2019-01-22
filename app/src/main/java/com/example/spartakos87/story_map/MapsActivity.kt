@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -23,9 +24,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mMap: GoogleMap
     private lateinit var lastLocation: Location
-
-
-
+    var username: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +42,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        val intent = intent
+        username = intent.getStringExtra("username")
 
 
-
-
+//        Add listener for float button
+        val mFab = findViewById<FloatingActionButton>(R.id.FButton)
+        mFab.setOnClickListener {
+            val intent = Intent(this, Reports::class.java)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
     }
 
         /**
@@ -136,6 +142,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val intent = Intent(this, AddYourStory::class.java)
             intent.putExtra("lat", latLng.latitude.toString())
             intent.putExtra("lng", latLng.longitude.toString())
+            intent.putExtra("username", username)
             startActivity(intent)
 
         }
@@ -145,6 +152,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.setOnMarkerClickListener {marker ->
             val infowindow = Intent(this, InfoWindow::class.java)
             infowindow.putExtra("id",marker.tag.toString())
+//            if the username is the same with the username of the creator of this marker you can delete
+//            otherwise user cannot
+            infowindow.putExtra("username",username)
             startActivity(infowindow)
             false
         }
