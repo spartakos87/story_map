@@ -119,6 +119,8 @@ return percentReports
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+
+
                         println("SEREPAS TASK NOT EMPTY")
                         for (document in task.result) {
                             val user = document.get("username")

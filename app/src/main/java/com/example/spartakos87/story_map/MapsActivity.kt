@@ -43,7 +43,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mapFragment.getMapAsync(this)
 
         val intent = intent
-        username = intent.getStringExtra("username")
+        username = intent!!.getStringExtra("username")
+        println("SEREPAS===>"+username)
 
 
 //        Add listener for float button
