@@ -30,8 +30,10 @@ class PersonalReport : AppCompatActivity() {
         val intent = intent
          username = intent.getStringExtra("username")
         val data = readDB(username)
-        val points = calculaterMonthlyPoints(data,typeReports)
-        val totalPoints = calculaterMonthlyPoints(data,totalTypeReports)
+        println("SEREPAS"+data)
+//        Check if data contain the key fail, if it is pop up a msg
+        val points = calculaterMonthlyPoints(data,typeReports) // Currnet month points
+        val totalPoints = calculaterMonthlyPoints(data,totalTypeReports) // Total points
         val chartPercentans = calculatePieChartShares(data, typeReports)
         val txtUsername = findViewById<TextView>(R.id.textView)
         val txtPointsMonth = findViewById<TextView>(R.id.textView2)
@@ -42,11 +44,18 @@ class PersonalReport : AppCompatActivity() {
 
 
 // Add pie chart , use this tutorial https://www.codingdemos.com/android-pie-chart-tutorial
+
         val pieChartView = findViewById<PieChartView>(R.id.chart)
 val pieValue = ArrayList<SliceValue>()
-        pieValue.add(SliceValue(chartPercentans.get(typeReports[0])!!.toFloat(), Color.BLUE))
-        pieValue.add(SliceValue(chartPercentans.get(typeReports[1])!!.toFloat(), Color.BLACK))
-        pieValue.add(SliceValue(chartPercentans.get(typeReports[2])!!.toFloat(), Color.RED))
+        pieValue.add(SliceValue(chartPercentans[typeReports[0]]!!.toFloat(), Color.BLUE).setLabel(
+                typeReports[0]+": "+chartPercentans[typeReports[0]].toString()
+        ))
+        pieValue.add(SliceValue(chartPercentans.get(typeReports[1])!!.toFloat(), Color.BLACK).setLabel(
+                typeReports[1]+": "+chartPercentans[typeReports[1]].toString()
+        ))
+        pieValue.add(SliceValue(chartPercentans.get(typeReports[2])!!.toFloat(), Color.RED).setLabel(
+                typeReports[1]+": "+chartPercentans[typeReports[2]].toString()
+        ))
 
 
         val pieChartData = PieChartData(pieValue)
@@ -61,10 +70,11 @@ val pieValue = ArrayList<SliceValue>()
 //        val typeReports = AddYourStory().list_of_choices
         var points:Int = 0
         for (t in typeReports){
+
             when(t){
-                typeReports[0] -> points += hashReports.get(t)!!*10
-                typeReports[1] -> points += hashReports.get(t)!!*20
-                typeReports[2] -> points += hashReports.get(t)!!*30
+                typeReports[0] -> points += hashReports[t]!!*10
+                typeReports[1] -> points += hashReports[t]!!*20
+                typeReports[2] -> points += hashReports[t]!!*30
             }
         }
         return points
@@ -90,6 +100,7 @@ return percentReports
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun readDB(username: String,preMonth:Boolean=false):HashMap<String,Int>{
+        println("In DB SEREPAS")
         //                    Make a map with all reports of current user
         val topicMapper: HashMap<String, Int> = HashMap<String,Int>()
         var fotismos:Int = 0;
@@ -105,9 +116,11 @@ return percentReports
         val db: FirebaseFirestore
         db = FirebaseFirestore.getInstance()
         db.collection("Stories")
-                .get().addOnSuccessListener {task ->
-                    if (!task.isEmpty){
-                        for (document in task.documents) {
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        println("SEREPAS TASK NOT EMPTY")
+                        for (document in task.result) {
                             val user = document.get("username")
                             if (user != null) {
                                 //First we check if there is the field of username, for legacy reasons mostly
@@ -164,14 +177,20 @@ return percentReports
                                     }
                                 } else {
 //                                    TODO Ignore this data
+                                            println("SEREPAS empty")
                                 }
                             }
 
                         }}
                         }
                         total = fotismos+aporrimata+allo
+                        println("SEREPAS TOTAL:"+total)
                         tTotal = totalFotismos+totalAporrimata+totalAllo
-                        }
+                        println("SEREPAS tTOTAL:"+tTotal)
+                        }else{
+                        println("SEREPAS empty2")
+
+                    }
 
 
 
@@ -185,11 +204,11 @@ return percentReports
                     topicMapper.put("tTotal",tTotal)
 
 
-
                 }.addOnFailureListener {
+                    println("SEREPAS fail ")
 topicMapper.put("fail",0)
                 }
-       return topicMapper
+        return topicMapper
     }
 
 
