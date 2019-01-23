@@ -29,8 +29,8 @@ class Reports : AppCompatActivity() {
 
         btnSummaryReport.setOnClickListener {
 //            In this case we dont need the username of current user
-            val intent = Intent(this, Reports::class.java)
-//            intent.putExtra("username", username)
+            val intent = Intent(this, SummaryReport::class.java)
+            intent.putExtra("username", username)
             startActivity(intent)
         }
     }

@@ -71,7 +71,6 @@ return percentReports
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun readDB(username: String,preMonth:Boolean=false):HashMap<String,Int> {
-        println("In DB SEREPAS")
         //                    Make a map with all reports of current user
         val topicMapper: HashMap<String, Int> = HashMap()
         var fotismos:Int = 0;
@@ -97,9 +96,8 @@ return percentReports
                                 if (user.toString() == username){
                                     // the next step is to check the type
                                     //in this step calculate the total report for the current user
-                                    val type = document.get("type")
+                                    var type = document.get("type")
                                     if (type != null) {
-                                        println("SEREPAS TYPES==>"+type.toString())
                                         when (type.toString()) {
                                             "Φωτισμός" -> totalFotismos += totalFotismos + 1
                                             "Απορρήματα" -> totalAporrimata += totalAporrimata + 1
@@ -147,8 +145,7 @@ return percentReports
                         }
                     }
 
-                        println("SEREPAS fotismos===>"+fotismos)
-                        println("SEREPAS Totalfotismos===>"+totalFotismos)
+
                   topicMapper.put("Φωτισμός" ,fotismos)
                     topicMapper.put( "Απορρήματα",aporrimata)
                     topicMapper.put("Αλλο",allo)
