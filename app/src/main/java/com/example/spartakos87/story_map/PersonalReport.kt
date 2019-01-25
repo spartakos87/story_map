@@ -22,7 +22,6 @@ class PersonalReport : AppCompatActivity() {
     var username: String = ""
     val typeReports = AddYourStory().list_of_choices
     val totalTypeReports = arrayOf("totalΦωτισμός","totalΑπορρήματα","totalΑλλο")
-    lateinit var data:HashMap<String,Int>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,23 +30,29 @@ class PersonalReport : AppCompatActivity() {
 
         val intent = intent
          username = intent.getStringExtra("username")
-         data =  readDB(username)
+         readDB(username)
 
 
     }
 
-    fun calculaterMonthlyPoints(hashReports:HashMap<String,Int>,typeReports:Array<String>):Int{
+    fun calculaterMonthlyPoints(hashReports:HashMap<String,Int>,typeReports:Array<String>,preMonth: Boolean=false):Int {
 //        Retrive from firebase all reports from the current user
 //        and calculate the current month points of him
 //        val typeReports = AddYourStory().list_of_choices
-        var points:Int = 0
-        for (t in typeReports){
+        var points: Int = 0
+        if (!preMonth){
+            for (t in typeReports) {
 
-            when(t){
-                typeReports[0] -> points += hashReports[t]!!*10
-                typeReports[1] -> points += hashReports[t]!!*20
-                typeReports[2] -> points += hashReports[t]!!*30
+                when (t) {
+                    typeReports[0] -> points += hashReports[t]!! * 10
+                    typeReports[1] -> points += hashReports[t]!! * 20
+                    typeReports[2] -> points += hashReports[t]!! * 30
+                }
             }
+
+    }else {
+            points = hashReports["totalΦωτισμός"]!!*10+hashReports["totalΑπορρήματα"]!!*20+
+                    hashReports["totalΑλλο"]!!*30
         }
         return points
     }
@@ -70,7 +75,7 @@ return percentReports
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun readDB(username: String,preMonth:Boolean=false):HashMap<String,Int> {
+    fun readDB(username: String,preMonth:Boolean=false) {
         //                    Make a map with all reports of current user
         val topicMapper: HashMap<String, Int> = HashMap()
         var fotismos:Int = 0;
@@ -156,14 +161,16 @@ return percentReports
                     topicMapper.put("tTotal",totalFotismos+totalAporrimata+totalAllo)
 
                         //        Check if data contain the key fail, if it is pop up a msg
-        val points = calculaterMonthlyPoints(data,typeReports) // Currnet month points
-        val totalPoints = calculaterMonthlyPoints(data,totalTypeReports) // Total points
-        val chartPercentans = calculatePieChartShares(data, typeReports)
+        val points = calculaterMonthlyPoints(topicMapper,typeReports) // Currnet month points
+        val totalPoints = calculaterMonthlyPoints(topicMapper,totalTypeReports) // Total points
+        val chartPercentans = calculatePieChartShares(topicMapper, typeReports)
         val txtUsername = findViewById<TextView>(R.id.textView)
         val txtPointsMonth = findViewById<TextView>(R.id.textView2)
         val txtPointsSum = findViewById<TextView>(R.id.textView5)
 
-
+txtUsername.setText("Hello "+username)
+                        txtPointsMonth.setText("Current month points:"+points)
+                        txtPointsSum.setText("Totatl points:"+totalPoints)
 
 // Add pie chart , use this tutorial https://www.codingdemos.com/android-pie-chart-tutorial
 
@@ -177,7 +184,7 @@ val pieValue = ArrayList<SliceValue>()
                 typeReports[1]+": "+chartPercentans[typeReports[1]].toString()
         ))
         pieValue.add(SliceValue(chartPercentans.get(typeReports[2])!!.toFloat(), Color.RED).setLabel(
-                typeReports[1]+": "+chartPercentans[typeReports[2]].toString()
+                typeReports[2]+": "+chartPercentans[typeReports[2]].toString()
         ))
 
 
@@ -191,7 +198,7 @@ val pieValue = ArrayList<SliceValue>()
 
 topicMapper.put("fail",0)
                 }
-        return topicMapper
+
     }
 
 
